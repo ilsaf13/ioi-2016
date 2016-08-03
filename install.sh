@@ -17,9 +17,9 @@ apt-get -y install oracle-java8-installer oracle-java8-set-default
 # Install FreePascal
 apt-get -y install fpc fp-docs
 # Install IDEs and editor that can be found in the repositories
-apt-get -y install codeblocks codeblocks-contrib emacs geany gedit vim-gnome joe kate kdevelop lazarus nano vim ddd mc libappindicator1 libindicator7 stl-manual konsole libvte9 valgrind python-doc
+apt-get -y install codeblocks codeblocks-contrib emacs geany geany-plugins gedit vim-gnome joe kate kdevelop lazarus nano vim ddd mc libappindicator1 libindicator7 stl-manual konsole libvte9 valgrind python-doc ruby
 # Install other software needed for contest management
-apt-get -y install openssh-server screen ntpdate
+apt-get -y install openssh-server screen ntpdate python-gtk2 python-webkit python-requests
 # Install software that is not found in Ubuntu repositories
 cd /tmp
 # Google Chrome
@@ -28,6 +28,9 @@ dpkg -i google-chrome-stable_current_amd64.deb
 # Sublime Text 3
 wget https://download.sublimetext.com/sublime-text_build-3114_amd64.deb
 dpkg -i sublime-text_build-3114_amd64.deb
+#Update C++ build command
+wget https://pcms.university.innopolis.ru/files/C++.sublime-package
+mv C++.sublime-package /opt/sublime_text/Packages
 # Oracle JDK Documentation (official download link requires accepting license)
 #wget https://pcms.university.innopolis.ru/files/jdk-8u91-docs-all.zip
 wget http://ioi2016.ru/uploads/file_store/attached_file/8/docs.zip
@@ -63,16 +66,38 @@ org.eclipse.linuxtools.profiling.feature.group,\
 org.eclipse.remote.core,\
 org.eclipse.remote.feature.group
 ln -s /opt/eclipse-4.5/eclipse /usr/bin/eclipse45
+# Netbeans
+wget http://download.netbeans.org/netbeans/8.1/final/bundles/netbeans-8.1-linux.sh
+chmod a+x netbeans-8.1-linux.sh
+#./netbeans-8.1-linux.sh --record netbeans.xml
+wget http://pcms.university.innopolis.ru/files/netbeans.xml
+./netbeans-8.1-linux.sh --silent --state netbeans.xml
 #Enable/disable AltGr
 #wget https://pcms.university.innopolis.ru/files/disable_altgr.sh
 #wget https://pcms.university.innopolis.ru/files/enable_altgr.sh
+wget https://pcms.university.innopolis.ru/files/icon.png
 wget http://ioi2016.ru/uploads/file_store/attached_file/6/enable_altgr.sh
 wget http://ioi2016.ru/uploads/file_store/attached_file/7/disable_altgr.sh
 cp disable_altgr.sh /opt/
 cp enable_altgr.sh /opt/
+mkdir /usr/local/share/altgr/
+cp icon.png /usr/local/share/altgr/
 chmod +x /opt/*.sh
+#Python3.4 Documentation
+wget https://www.python.org/ftp/python/doc/current/python-3.4.3-docs-html.tar.bz2
+tar xvf python-3.4.3-docs-html.tar.bz2 -C /opt/
+cat << EOF > python3-doc.desktop
+[Desktop Entry]
+Type=Application
+Name=Python 3.4.3 Documentation
+Comment=Python 3.4.3 Documentation
+Icon=firefox
+Exec=firefox /opt/python-3.4.3-docs-html/index.html
+Terminal=false
+Categories=Documentation;Python3;
+EOF
 # Create desktop icons
-for i in gedit codeblocks ddd emacs24 firefox geany gnome-calculator gnome-terminal google-chrome gvim lazarus-1.4.0 mc org.kde.kate org.kde.konsole python2.7 python3.4 sublime_text vim code
+for i in gedit codeblocks ddd emacs24 firefox geany gnome-calculator gnome-terminal google-chrome gvim lazarus-1.4.0 mc org.kde.kate org.kde.konsole python2.7 python3.4 sublime_text vim code netbeans-8.1
 do
 	cp /usr/share/applications/$i.desktop /home/$CONTESTANT_USERNAME/Desktop
 done
@@ -93,18 +118,20 @@ EOF
 cat << EOF > disable_altgr.desktop
 [Desktop Entry]
 Type=Application
-Name=Disable AltGr
+Name=Disable Menu\non Alt Gr
 Comment=Disable AltGr
 Exec=/opt/disable_altgr.sh
+Icon=/usr/local/share/altgr/icon.png
 Terminal=true
 Categories=AltGr; 
 EOF
 cat << EOF > enable_altgr.desktop
 [Desktop Entry]
 Type=Application
-Name=Enable AltGr
+Name=Enable Menu\non Alt Gr
 Comment=Enable AltGr
 Exec=/opt/enable_altgr.sh
+Icon=/usr/local/share/altgr/icon.png
 Terminal=true
 Categories=AltGr; 
 EOF
@@ -158,7 +185,7 @@ Exec=firefox /usr/share/doc/stl-manual/html/index.html
 Terminal=false
 Categories=Documentation;STL;
 EOF
-for i in eclipse45 disable_altgr enable_altgr cpp-doc fp-doc java-doc python-doc stl-manual
+for i in eclipse45 disable_altgr enable_altgr cpp-doc fp-doc java-doc python-doc stl-manual python3-doc
 do
 	cp $i.desktop /home/$CONTESTANT_USERNAME/Desktop
 done
